@@ -7,8 +7,7 @@ pygame.init()
 WIDTH = 800
 HEIGHT = 600
 
-
-class Arkanoid():
+class Level1():
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption('Arkanoid')
@@ -51,6 +50,18 @@ class Arkanoid():
                 block = self.Block(x, y, color, self.blocks)
                 self.all_sprites.add(block)
 
+    def is_over(self):
+        if self.ball.rect.y >= 600:
+            self.game_over_screen()
+
+    def game_over_screen(self):
+        self.screen.fill(self.BLACK)
+        game_over_font = pygame.font.SysFont(None, 72)
+        self.draw_text('Game Over, try again', game_over_font, self.GREEN, self.screen, 170, 240)
+        pygame.display.flip()
+        pygame.time.delay(2000)  # Пауза на 2 секунд
+        self.show_start_screen()  # Возвращаем в начало
+
     def draw_text(self, text, font, color, surface, x, y):
         textobj = font.render(text, 1, color)
         textrect = textobj.get_rect()
@@ -71,12 +82,12 @@ class Arkanoid():
                     pygame.quit()
                     quit()
                 if event.type == MOUSEBUTTONDOWN:
+                    self.ball.start_movement()
                     start = False
             pygame.display.flip()
 
     def run(self):
         self.show_start_screen()
-        self.ball.start_movement()
 
         running = True
         while running:
@@ -84,10 +95,11 @@ class Arkanoid():
                 if event.type == QUIT:
                     running = False
 
+            self.is_over()
             self.all_sprites.update()
 
             hits = pygame.sprite.spritecollide(self.ball, self.blocks, True)
-            for hit in hits:
+            for i in hits:
                 self.ball.vy = -self.ball.vy
 
             self.screen.fill(self.BLACK)
@@ -107,11 +119,7 @@ class Arkanoid():
 
         def update(self):
             pos = pygame.mouse.get_pos()
-            self.rect.x = pos[0]
-            if self.rect.x > WIDTH - 100:
-                self.rect.x = WIDTH - 100
-            elif self.rect.x < 0:
-                self.rect.x = 0
+            self.rect.x = max(min(pos[0], WIDTH - self.rect.width), 0)
 
     class Ball(pygame.sprite.Sprite):
         def __init__(self, x, y, game):
@@ -165,5 +173,5 @@ class Arkanoid():
 
 
 if __name__ == '__main__':
-    game = Arkanoid()
+    game = Level1()
     game.run()
