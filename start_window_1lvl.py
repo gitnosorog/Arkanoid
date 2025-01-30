@@ -1,11 +1,13 @@
 import pygame
 from pygame.locals import *
 import random as r
+import time
 
 pygame.init()
 
 WIDTH = 800
 HEIGHT = 600
+
 
 class Level1():
     def __init__(self):
@@ -42,13 +44,35 @@ class Level1():
         colors = [self.RED, self.GREEN, self.BLUE, self.YELLOW]
         block_width = 75
         block_height = 30
-        for row in range(5):
+        for row in range(4):
             for col in range(10):
                 color = r.choice(colors)
                 x = col * (block_width + 10) + 35
                 y = row * (block_height + 10) + 50
                 block = self.Block(x, y, color, self.blocks)
                 self.all_sprites.add(block)
+
+    def check_victory(self):
+        if len(self.blocks) == 0:
+            self.win_screen()
+
+    def win_screen(self):
+        self.screen.fill(self.BLACK)
+        win_font = pygame.font.SysFont(None, 72)
+        self.draw_text('Вы выиграли!', win_font, self.GREEN, self.screen, 230, 220)
+        next_level_font = pygame.font.SysFont(None, 36)
+        self.draw_text('Нажмите любую клавишу для продолжения', next_level_font, self.WHITE, self.screen, 180, 320)
+        pygame.display.flip()
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                    waiting = False
+        self.next_level()  # Переход на следующий уровень
+
+    def next_level(self):
+        print("Переходим на следующий уровень!")
+        # Здесь можно реализовать переход на следующий уровень или завершить игру
 
     def is_over(self):
         if self.ball.rect.y >= 600:
@@ -57,10 +81,10 @@ class Level1():
     def game_over_screen(self):
         self.screen.fill(self.BLACK)
         game_over_font = pygame.font.SysFont(None, 72)
-        self.draw_text('Game Over, try again', game_over_font, self.GREEN, self.screen, 170, 240)
+        self.draw_text('Game Over', game_over_font, self.GREEN, self.screen, 280, 240)
         pygame.display.flip()
-        pygame.time.delay(2000)  # Пауза на 2 секунд
-        self.show_start_screen()  # Возвращаем в начало
+        pygame.time.delay(2000)  # Пауза на 2 секунды
+        self.show_start_screen()  # Возвращаемся к началу
 
     def draw_text(self, text, font, color, surface, x, y):
         textobj = font.render(text, 1, color)
@@ -82,7 +106,7 @@ class Level1():
                     pygame.quit()
                     quit()
                 if event.type == MOUSEBUTTONDOWN:
-                    self.ball.start_movement()
+                    self.ball.start_movement()  # Начинаем движение шарика после нажатия
                     start = False
             pygame.display.flip()
 
@@ -95,11 +119,12 @@ class Level1():
                 if event.type == QUIT:
                     running = False
 
-            self.is_over()
+            self.check_victory()  # Проверка победы
+            self.is_over()  # Проверка проигрыша
             self.all_sprites.update()
 
             hits = pygame.sprite.spritecollide(self.ball, self.blocks, True)
-            for i in hits:
+            for hit in hits:
                 self.ball.vy = -self.ball.vy
 
             self.screen.fill(self.BLACK)
@@ -134,6 +159,7 @@ class Level1():
             self.platform = game.platform
 
         def start_movement(self):
+            time.sleep(3)  # Ждем 3 секунды
             self.vx = r.choice([-1, 1])
             self.vy = 1
 
