@@ -3,19 +3,18 @@ from pygame.locals import *
 import random as r
 from pygame.sprite import Sprite
 
-# Константы
+
 WIDTH = 800
 HEIGHT = 600
 TEXT_COLOR = (255, 255, 255)
 BG_COLOR = (0, 0, 0)
 
-# Инициализация Pygame
+
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Arkanoid')
 clock = pygame.time.Clock()
 
-# Цвета
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -35,6 +34,7 @@ class Platform(Sprite):
     def update(self):
         pos = pygame.mouse.get_pos()
         self.rect.x = max(min(pos[0], WIDTH - self.rect.width), 0)
+
 
 # Класс мяча
 class Ball(Sprite):
@@ -128,7 +128,7 @@ class Level:
                 self.all_sprites.add(block)
 
     def check_victory(self):
-        if not self.blocks:
+        if len(self.blocks) == 0:
             self.win_screen()
 
     def win_screen(self):
@@ -143,11 +143,6 @@ class Level:
             for event in pygame.event.get():
                 if event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
                     waiting = False
-        self.next_level()  # Переход на следующий уровень
-
-    def next_level(self):
-        print("Переходим на следующий уровень!")
-        # Здесь можно реализовать переход на следующий уровень или завершить игру
 
     def is_over(self):
         if self.ball.rect.y >= 600:
@@ -182,12 +177,11 @@ class Level:
                     quit()
                 if event.type == MOUSEBUTTONDOWN:
                     self.reset_game()
-                    self.ball.start_movement()  # Начинаем движение шарика после нажатия
+                    self.ball.start_movement()  # движение шарика после нажатия
                     start = False
             pygame.display.flip()
 
     def reset_game(self):
-        """Сброс всех состояний и объектов перед новым раунд."""
         self.__init__()
 
     def run(self):
@@ -209,10 +203,9 @@ class Level:
 
             self.screen.fill(BG_COLOR)
             self.all_sprites.draw(self.screen)
-            pygame.display.flip()
-
-            if not self.blocks:
+            if len(self.blocks) == 0:
                 self.check_victory()
+            pygame.display.flip()
 
         pygame.quit()
 
