@@ -1,4 +1,5 @@
 import pygame
+from lvl3 import Level3
 from pygame.locals import *
 import random
 from pygame.sprite import Sprite
@@ -92,7 +93,7 @@ class Border(Sprite):
 
 
 # Класс уровня
-class Level:
+class Level2:
     def __init__(self):
         self.screen = screen
         self.all_sprites = pygame.sprite.Group()
@@ -132,22 +133,21 @@ class Level:
                 self.blocks.add(block)
                 self.all_sprites.add(block)
 
-    def check_victory(self):
-        if len(self.blocks) == 0:
-            self.win_screen()
-
     def win_screen(self):
         self.screen.fill(BG_COLOR)
-        win_font = pygame.font.SysFont(None, 72)
-        self.draw_text('Вы выиграли!', win_font, GREEN, 230, 220)
+        win_font = pygame.font.SysFont(None, 36)
+        self.draw_text('Вы прошли на финальный уровень!', win_font, GREEN, 150, 220)
         next_level_font = pygame.font.SysFont(None, 36)
-        self.draw_text('Нажмите любую клавишу для продолжения', next_level_font, WHITE, 180, 320)
+        self.draw_text('Нажмите на Enter для продолжения', next_level_font, WHITE, 180, 320)
         pygame.display.flip()
         waiting = True
         while waiting:
             for event in pygame.event.get():
-                if event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
-                    waiting = False
+                if event.type == QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == KEYDOWN or event.type == K_RETURN:
+                    Level3().run()
 
     def is_over(self):
         if self.ball.rect.y >= 600:
@@ -170,8 +170,10 @@ class Level:
     def show_start_screen(self):
         self.screen.fill(BG_COLOR)
         title_font = pygame.font.SysFont(None, 72)
+        text_font = pygame.font.SysFont(None, 36)
         button_font = pygame.font.SysFont(None, 48)
-        self.draw_text('Игра Арканоид', title_font, GREEN, 250, 200)
+        self.draw_text('Игра Арканоид', title_font, GREEN, 250, 150)
+        self.draw_text('Пирамида. Уровень 2', text_font, WHITE, 270, 250)
         pygame.draw.rect(self.screen, WHITE, (300, 300, 200, 100))
         self.draw_text('Start', button_font, GREEN, 360, 335)
         start = True
@@ -192,12 +194,14 @@ class Level:
     def run(self):
         self.show_start_screen()
 
+        IS_WIN = True
         running = True
         while running:
             clock.tick(60)
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    running = False
+                    pygame.quit()
+                    quit()
 
             self.all_sprites.update()
             self.is_over()  # Проверка проигрыша
@@ -208,13 +212,14 @@ class Level:
 
             self.screen.fill(BG_COLOR)
             self.all_sprites.draw(self.screen)
-            if len(self.blocks) == 0:
-                self.check_victory()
+            if IS_WIN:
+                if len(self.blocks) == 0:
+                    self.win_screen()
             pygame.display.flip()
 
         pygame.quit()
 
 
 if __name__ == '__main__':
-    level = Level()
+    level = Level2()
     level.run()
