@@ -1,5 +1,4 @@
 import pygame
-import sys
 from pygame.locals import *
 import random
 from pygame.sprite import Sprite
@@ -155,7 +154,7 @@ class Level3:
 
     def win_screen(self):
         self.screen.fill(BG_COLOR)
-        win_font = pygame.font.SysFont(None, 72)
+        win_font = pygame.font.SysFont(None, 36)
         self.draw_text('Вы прошли!', win_font, GREEN, 230, 220)
         next_level_font = pygame.font.SysFont(None, 36)
         self.draw_text('Нажмите Enter чтобы пройти на следующий уровень', next_level_font, WHITE, 180, 320)
@@ -187,8 +186,10 @@ class Level3:
     def show_start_screen(self):
         self.screen.fill(BG_COLOR)
         title_font = pygame.font.SysFont(None, 72)
+        text_font = pygame.font.SysFont(None, 36)
         button_font = pygame.font.SysFont(None, 48)
         self.draw_text('Игра Арканоид', title_font, GREEN, 250, 200)
+        self.draw_text('Башня. Уровень 1', text_font, WHITE, 250, 200)
         pygame.draw.rect(self.screen, WHITE, (300, 300, 200, 100))
         self.draw_text('Start', button_font, GREEN, 360, 335)
         start = True
