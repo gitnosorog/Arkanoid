@@ -128,16 +128,13 @@ class Level3:
                 self.blocks.add(block)
                 self.all_sprites.add(block)
 
-    def check_victory(self):
-        if len(self.blocks) == 0:
-            self.win_screen()
 
     def win_screen(self):
         self.screen.fill(BG_COLOR)
         win_font = pygame.font.SysFont(None, 72)
         self.draw_text('Вы выиграли!', win_font, GREEN, 200, 220)
         next_level_font = pygame.font.SysFont(None, 36)
-        self.draw_text('Спустя столько попыток...Поздравляю с победой!', next_level_font, WHITE, 180, 320)
+        self.draw_text('Поздравляю с победой, ты прошел в долину славы!', next_level_font, WHITE, 180, 320)
         pygame.display.flip()
         waiting = True
         while waiting:
@@ -193,8 +190,8 @@ class Level3:
     def run(self):
         self.show_start_screen()
 
-        running = True
         IS_WIN = True
+        running = True
         while running:
             clock.tick(60)
             for event in pygame.event.get():
@@ -222,3 +219,4 @@ class Level3:
 if __name__ == '__main__':
     level = Level3()
     level.run()
+
